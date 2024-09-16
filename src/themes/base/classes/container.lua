@@ -160,7 +160,13 @@ local function new(data : types.container_data) : (boolean, types.input_containe
 
     local function layout_order_changed(layout_order : number)
         container.frame.get().LayoutOrder = layout_order
-    end
+	end
+	
+	local function config_changed(new_value)
+		container.foreach_recursive(function(object)
+			object.config.set(new_value)
+		end)
+	end
 
     --[[----------------------------------------------------------------------]]--
 
@@ -182,8 +188,8 @@ local function new(data : types.container_data) : (boolean, types.input_containe
         foreach = foreach,
         foreach_recursive = foreach_recursive,
         
-        container = props(nil).immutable,
-        config = props(nil).immutable,
+        container = props(nil),
+        config = props(nil),
         
         __type = "input_container" :: any,
         __objects = objects_inital,
@@ -215,7 +221,8 @@ local function new(data : types.container_data) : (boolean, types.input_containe
     frame_init(container.frame.get())
 
     --[[----------------------------------------------------------------------]]--
-
+	
+	container.config.changed:Connect(config_changed)
     container.key.changed:Connect(key_changed)
     container.enabled.changed:Connect(enabled_changed)
     container.visible.changed:Connect(visible_changed)

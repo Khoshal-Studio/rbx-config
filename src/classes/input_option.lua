@@ -107,7 +107,7 @@ local function new(data : data) : (boolean, config_types.input_option?)
 
     --[[----------------------------------------------------------------------]]--
 
-    local option_base = props(data.default_value, option_info)
+	local option_base = props(data.default_value, option_info)
 
     --[[----------------------------------------------------------------------]]--
 
@@ -127,13 +127,13 @@ local function new(data : data) : (boolean, config_types.input_option?)
 
     option.changed = option_base.changed
     
-    option.config = props(nil).immutable
-    option.container = props(nil).immutable
+	option.config = props(nil)
+	option.container = props(nil)
     option.datatype = props(option_type).immutable
 
     option.middleware = option_base.middleware
 
-    option.__type = "input_option"    
+	option.__type = "input_option"
 
     --[[----------------------------------------------------------------------]]--
 

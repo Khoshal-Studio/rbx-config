@@ -9,7 +9,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 --------------------------------------------------------------------
 
 -- Place config in replicated storage!
-local config = require(ReplicatedStorage:WaitFPorChild("config"))
+local config = require(ReplicatedStorage:WaitForChild("config"))
 local base = config.themes.base
 
 --------------------------------------------------------------------
@@ -35,20 +35,20 @@ local data = {
 
 local function fov_test()
 	local success, config = base.config(data)
-	
+
 	if not (success and config) then
 		return
 	end
-	
-	local fov : any = config.get_object_from_path("Field of View")
-	
+
+	local fov : any = config.objects.get()["Field of View"]
+
 	fov.changed:Connect(function(value : number)
 		workspace.CurrentCamera.FieldOfView = value
 	end)
 
 	local ScreenGui = Instance.new("ScreenGui")
 	ScreenGui.Parent = Player.PlayerGui
-	
+
 	config.frame.get().Parent = ScreenGui
 	config.frame.get().Position = UDim2.fromScale(0.5, 0.5)
 	config.frame.get().Size = UDim2.fromScale(0.3, 0.15)

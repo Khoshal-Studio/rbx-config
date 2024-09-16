@@ -131,8 +131,8 @@ export type input_option_base<type, datatype, self, export_type> =
     enabled        : prop<boolean>,
 
     datatype       : immutable_prop<datatype>,
-    config         : immutable_prop<any>,
-    container      : immutable_prop<any>,
+    config         : prop<any>,
+    container      : prop<any>,
 
     middleware     : middleware_info<type>,
 
@@ -184,8 +184,8 @@ export type input_container =
     enabled     : prop<boolean>,
     objects     : immutable_prop<any>,
 
-    container   : immutable_prop<any>,
-    config      : immutable_prop<any>,
+    container   : prop<any>,
+    config      : prop<any>,
 
     delete      : () -> (),
     get_object  : (key : string) -> any?,

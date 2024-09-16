@@ -22,6 +22,8 @@ module.classes = theme_classes
 module.datatype_classes = theme_datatypes
 module.presets = theme_presets
 
+module.enums = require(script:WaitForChild("enums"))
+
 ----------------------------------------------------------------------------------------------------------------
 
 return module

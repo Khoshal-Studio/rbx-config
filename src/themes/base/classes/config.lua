@@ -31,7 +31,7 @@ local function new(data : types.config_setup) : (boolean, types.config_window?)
 
     --[[----------------------------------------------------------------------]]--
 
-    local config : types.config_window_internal = nil
+    local config : types.config_window_internal = {} :: any
     local config_frame_initial = util.presets.config:Clone() :: types.config_frame
 
     local frame_prop = props(config_frame_initial)
@@ -198,7 +198,7 @@ local function new(data : types.config_setup) : (boolean, types.config_window?)
     end
 
     local function get_object(key : string) : types.input_option?
-        return config.__objects[key] :: any
+        return config.objects.get()[key] :: any
     end
 
     local function to_list_path(path : {[number] : string} | string) : {[number] : string}
@@ -221,10 +221,12 @@ local function new(data : types.config_setup) : (boolean, types.config_window?)
 
             if not current then
                 return nil
-            end
+			end
+			
+			print(current, current.__type)
 
             if current.__type == "input_container" or current.__type == "config_window" then
-                current = current.__objects[v]
+                current = current.objects.get()[v]
             elseif current.__type == "input_option" then
                 if i ~= #decoded_path then
                     return nil
@@ -291,11 +293,11 @@ local function new(data : types.config_setup) : (boolean, types.config_window?)
 
         frame.bottom_bar.apply.MouseButton1Click:Connect(apply)
         
-        for key, object in pairs(config.__objects) do
+        for key, object in pairs(config.objects.get()) do
             local object_frame = (object.frame :: any).get()
 
-            local x = object :: any
-            x.__config = config
+			local x = object :: any
+            x.config.set(config)
 
             object_frame.Parent = frame.config.config
             object_frame.LayoutOrder = (object.layout_order :: any).get()
