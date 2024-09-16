@@ -2,12 +2,14 @@
 
 --------------------------------------------------------------------
 
+local Players = game:GetService("Players")
+local Player = Players.LocalPlayer
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 --------------------------------------------------------------------
 
 -- Place config in replicated storage!
-local config = require(ReplicatedStorage:WaitForChild("config"))
+local config = require(ReplicatedStorage:WaitFPorChild("config"))
 local base = config.themes.base
 
 --------------------------------------------------------------------
@@ -45,7 +47,7 @@ local function fov_test()
 	end)
 
 	local ScreenGui = Instance.new("ScreenGui")
-	ScreenGui.Parent = game.Players.LocalPlayer.PlayerGui
+	ScreenGui.Parent = Player.PlayerGui
 	
 	config.frame.get().Parent = ScreenGui
 	config.frame.get().Position = UDim2.fromScale(0.5, 0.5)
@@ -55,7 +57,7 @@ end
 --------------------------------------------------------------------
 
 local function main()
-	__fov_test()
+	fov_test()
 end
 
 --------------------------------------------------------------------

@@ -15,9 +15,10 @@ type boolean_input_option = config_types.boolean_input_option
 ----------------------------------------------------------------------------------------------------------------
 
 local function new(data : boolean_data) : (boolean, boolean_input_option?)
-    local success, option : boolean_input_option? = input_option_backend(data)
+    local success, option : any? = input_option_backend(data)
 
     if not (success and option) then
+        warn("Failed to create boolean input option." , "\n", "Reason: input option backend class failed")
         return false
     end
 

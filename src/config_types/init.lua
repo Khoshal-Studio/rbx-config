@@ -65,7 +65,7 @@ export type input_option = input_option_types.input_option
 
 -----------------------------------------------------------------------------------------------------------------
 
-export type input_container = object_base<"input_container"> & 
+export type input_container =
 {
     key : prop<string>,
     objects : immutable_prop<any>,
@@ -77,10 +77,12 @@ export type input_container = object_base<"input_container"> &
     export : () -> {[string] : any},
 
     enabled : prop<boolean>,
-    __container : any?,
-    __config : any?,
+    container : immutable_prop<any>,
+    config : immutable_prop<any>,
 
-    delete : (self: any) -> (),
+    delete : () -> (),
+
+    __type : "input_container",
 }
 
 ----------------------------------------------------------------------------------------------------------------

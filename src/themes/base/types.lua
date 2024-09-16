@@ -127,6 +127,9 @@ export type input_container = config_types.input_container &
     frame : immutable_prop<container_frame>,
     visible : prop<boolean>,
     layout_order : prop<number>,
+
+    foreach : (callback : (object : any) -> ()) -> (),
+    foreach_recursive : (callback : (object : any) -> ()) -> (),
 }
 
 export type internal_input_container = input_container & 
@@ -135,9 +138,6 @@ export type internal_input_container = input_container &
     {
         [string] : any
     },
- 
-    __foreach : (callback : (object : any) -> ()) -> (),
-    __foreach_recursive : (callback : (object : any) -> ()) -> (),
 }
 
 ----------------------------------------------------------------------------------------------------------------
@@ -249,13 +249,13 @@ export type config_window = window &
 
     changed : restricted_signal,
     applied : restricted_signal,
+    
+    foreach : (callback : (object : any) -> ()) -> (),
+    foreach_recursive : (callback : (object : any) -> ()) -> (),
 }
 
 export type config_window_internal = config_window & 
 {
-    __foreach : (callback : (object : any) -> ()) -> (),
-    __foreach_recursive : (callback : (object : any) -> ()) -> (),
-
     __objects : input_objects,
     __changed : signal,
     __applied : signal

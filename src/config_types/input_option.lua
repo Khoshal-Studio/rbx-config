@@ -6,7 +6,6 @@ local dependencies = script.Parent.Parent:WaitForChild("dependencies")
 
 local prop_types = require(dependencies:WaitForChild("props"):WaitForChild("props_types"))
 local signal_types = require(dependencies:WaitForChild("signal"):WaitForChild("signal_types"))
-local dragger_types = require(dependencies:WaitForChild("dragger"):WaitForChild("dragger_types"))
 
 local option_data = require(script.Parent:WaitForChild("option_data"))
 
@@ -18,11 +17,12 @@ type get<T> = prop_types.get<T>
 type set<T> = prop_types.set<T>
 type signal = signal_types.signal
 type prop<T> = prop_types.prop<T>
+type immutable_prop<T> = prop_types.immutable_prop<T>
 type num_info = option_data.num_info
 
 -----------------------------------------------------------------------------------------------------------------
 
-export type input_option_base<_type, datatype, _self, export_type> = object_base<"input_option"> & 
+export type input_option_base<_type, datatype, _self, export_type> =
 {
 	get : get<_type>,
 	set : set<_type>,
@@ -44,9 +44,11 @@ export type input_option_base<_type, datatype, _self, export_type> = object_base
 	resetable : prop<boolean>,
 	enabled : prop<boolean>,
 
-	__container : any?,
-	__config : any?,
-	__datatype : datatype,
+	container : immutable_prop<any>,
+	config : immutable_prop<any>,
+	datatype : immutable_prop<datatype>,
+
+	__type : "input_option",
 }
 
 -----------------------------------------------------------------------------------------------------------------

@@ -8,7 +8,7 @@ local config_types = require(script.Parent.Parent:WaitForChild("config_types"))
 ------------------------------------------------------------------------------------------------------
 
 type data = config_types.data
-type input_option_base<T, K, D, E> = config_types.input_option_base<T, K, D, E>
+type input_option_base<type, datatype, self, export_type> = config_types.input_option_base<type, datatype, self, export_type>
 
 ------------------------------------------------------------------------------------------------------
 
@@ -25,8 +25,9 @@ local props = config_util.props
 
 ------------------------------------------------------------------------------------------------------
 
-local function new(data : data) : (boolean, any?)
+local function new(data : data) : (boolean, config_types.input_option?)
     local valid = universal_valid_data(data)
+
     if not valid then
         return false
     end
@@ -35,38 +36,43 @@ local function new(data : data) : (boolean, any?)
 
     local option_type = option_type_from_data(data)
 
-    local option : input_option_base<any, any, any, any> = nil
+    local option : input_option_base<any,any,any,any> = ({} :: any)
 
     --[[----------------------------------------------------------------------]]--
 
-    local function delete_option(self : any)
-        delete(self)
+    local function delete_method()
+        delete(option)
+
+        local container = option.container.get()
         
-        if self.__container then
-            self.__container[self.key.get()] = nil
+        if container then
+            local key = option.key.get()
+            container[key] = nil
         end
     end
 
-    local function reset(self : any)
+    local function reset()
         if not option.resetable.get() then
             return
         end
-        self.set(self.default_value.get())
+        
+        local default_value = option.default_value.get()
+
+        option.set(default_value)
     end
 
     local function get_path_method()
         return get_path(option)
     end
 
-    local function key_changed(new_value : string, previous_value : string)
-        local x = option.__container or option.__config
+    local function key_changed(new_value : string)
+        local parent : config_types.input_container = option.container.get() or option.config.get()
 
-        if not x then
+        if not parent then
             return
         end
 
-        x.__objects[new_value] = option
-        x.__objects[previous_value] = nil
+        parent.objects.get()[new_value] = option
     end
 
     local cancel = get_cancel_fn(option)
@@ -89,7 +95,7 @@ local function new(data : data) : (boolean, any?)
     local key_info = {
         set = {
             function(new_value : any)
-                if option.__container and option.__container.__type == "input_container" and option.__container[new_value] then
+                if option.container.get() and option.container.get().__type == "input_container" and option.container.get()[new_value] then
                     warn(string.format("key %s already used", new_value))
                     return cancel("key")
                 end
@@ -105,32 +111,29 @@ local function new(data : data) : (boolean, any?)
 
     --[[----------------------------------------------------------------------]]--
 
-    option = {
-        get = option_base.get,
-        set = option_base.set,
-        middleware = option_base.middleware,
-        changed = option_base.changed,
+    option.key = props(data.key, key_info)
+    option.resetable = props(if data.resetable == nil then true else data.resetable)
+    option.description = props(data.description or default_description)
+    option.original_value = props(data.default_value)
+    option.default_value = props(data.default_value)
+    option.enabled = props(if data.enabled == nil then true else data.enabled)    
 
-        delete = delete_option,
-        reset = reset,
-        get_path = get_path_method,
+    option.get = option_base.get
+    option.set = option_base.set
+    option.delete = delete_method
+    option.reset = reset
+    option.get_path = get_path_method
+    option.export = nil :: any
 
-        key = props(data.key, key_info),
-        export = nil :: any, 
+    option.changed = option_base.changed
+    
+    option.config = props(nil).immutable
+    option.container = props(nil).immutable
+    option.datatype = props(option_type).immutable
 
-        resetable = props(if data.resetable == nil then true else data.resetable),
-        description = props(data.description or default_description),
+    option.middleware = option_base.middleware
 
-        original_value = props(data.default_value),
-        default_value = props(data.default_value),
-
-        enabled = props(if data.enabled == nil then true else data.enabled),
-
-        __type = "input_option" :: any,
-        __config = nil,
-        __container = nil,
-        __datatype = option_type,
-    }
+    option.__type = "input_option"    
 
     --[[----------------------------------------------------------------------]]--
 

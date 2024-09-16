@@ -26,7 +26,7 @@ local get_cancel_fn = config_util.get_cancel_fn
 ------------------------------------------------------------------------------------------------------
 
 local function new(data : dropdown_data) : (boolean, dropdown_input_option?)
-    local success, option : dropdown_input_option? = input_option_backend(data)
+    local success, option : any? = input_option_backend(data)
 
     if not (success and option) then
         return false

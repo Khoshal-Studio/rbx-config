@@ -45,6 +45,11 @@ export type option_type =
   | "number"
   | "dropdown"
 
+export type table<I,V> = 
+{
+    [I] : V
+}
+
 ----------------------------------------------------------------------------------------------------------------
 
 export type num_info = 
@@ -78,10 +83,7 @@ export type data_base<option_type, datatype> =
 
 export type dropdown_data = data_base<"dropdown", string> & 
 {
-    choices : 
-    {
-        [number] : string
-    },  
+    choices : table<number, string>,
 }
 
 export type string_data = data_base<"string", string> & 
@@ -104,15 +106,13 @@ export type data =
   | number_data
   | dropdown_data
 
-export type container_data =
+export type container_data<option_data_type, container_data_type> =
 {
     key : string,
-    objects : config_setup<data, container_data>,
+    objects : config_setup<option_data_type, container_data_type>,
 }
 
-export type config_objects<T, V> = {
-    [number] : T | V
-}
+export type config_objects<T, V> = table<number, T | V>
 
 export type config_setup<T,V> = 
 {
@@ -121,32 +121,32 @@ export type config_setup<T,V> =
 
 -----------------------------------------------------------------------------------------------------------------
 
-export type input_option_base<type, datatype, self, export_type> = object_base<"input_option"> & 
-{
-    get : get<type>,
-    set : set<type>,
-    changed : signal,
-    middleware : middleware_info<type>,
-
-    export : () -> export_type,
-    get_path : () -> string,
-    
-    delete : (self : self) -> (),
-    reset : (self : self) -> (),
-    
-    key : prop<string>,
-    description : prop<string>,
-
+export type input_option_base<type, datatype, self, export_type> =
+{    
+    key            : prop<string>,
+    description    : prop<string>,
     original_value : prop<type>,
-    default_value : prop<type>,
+    default_value  : prop<type>,
+    resetable      : prop<boolean>,
+    enabled        : prop<boolean>,
 
-    resetable : prop<boolean>,
-    enabled : prop<boolean>,
-    
-    __container : any?,
-    __config : any?,
-    __type : "input_option",
-    __datatype : datatype,
+    datatype       : immutable_prop<datatype>,
+    config         : immutable_prop<any>,
+    container      : immutable_prop<any>,
+
+    middleware     : middleware_info<type>,
+
+    get            : get<type>,
+    set            : set<type>,
+
+    export         : () -> export_type,
+    get_path       : () -> string,
+    delete         : () -> (),
+    reset          : () -> (),
+
+    changed        : signal,
+
+    __type         : "input_option",
 }
 
 -----------------------------------------------------------------------------------------------------------------
@@ -163,9 +163,7 @@ export type string_input_option = input_option_base<string, "string", string_inp
 
 export type dropdown_input_option = input_option_base<string?, "dropdown", dropdown_input_option, string> & 
 {
-    choices : prop<{
-        [number] : string
-    }>,
+    choices : prop< table<number, string> >,
 }
 
 export type boolean_input_option = input_option_base<boolean, "boolean", boolean_input_option, boolean>
@@ -180,29 +178,21 @@ export type input_option =
 
 -----------------------------------------------------------------------------------------------------------------
 
-export type input_container = object_base<"input_container"> & 
+export type input_container =
 {
-    key : prop<string>,
-    objects : immutable_prop<any>,
+    key         : prop<string>,
+    enabled     : prop<boolean>,
+    objects     : immutable_prop<any>,
 
-    get_object : (key : string) -> any?,
+    container   : immutable_prop<any>,
+    config      : immutable_prop<any>,
 
-    get_path : () -> string,
+    delete      : () -> (),
+    get_object  : (key : string) -> any?,
+    get_path    : () -> string,
+    export      : () -> table<string, any>,
 
-    export : () -> {[string] : any},
-
-    enabled : prop<boolean>,
-    __container : any?,
-    __config : any?,
-
-    delete : (self: any) -> (),
-}
-
-----------------------------------------------------------------------------------------------------------------
-
-export type input = object_base<"input"> & 
-{
-    [string] : input_option | input_container
+    __type      : "input_container",
 }
 
 ----------------------------------------------------------------------------------------------------------------

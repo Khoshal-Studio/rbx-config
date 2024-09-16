@@ -3,7 +3,6 @@
   "tree": {
     "$className": "DataModel",
     "config" : {
-      "$className" : "ModuleScript",
       "$path" : "src"
     }
   }

@@ -123,14 +123,14 @@ local function new(data : types.data) : (boolean, types.input_option?, prop<any>
 	
     --[[----------------------------------------------------------------------]]--
 
-    local function delete_option(self : types.input_option_root)
-        self.frame.get():Destroy()
+    local function delete_option()
+        option.frame.get():Destroy()
 
-        delete(self)
+        delete(option)
         frame_prop.set(nil :: any, true)
         
-        if self.__container then
-            self.__container[self.key.get()] = nil
+        if option.container.get() then
+            option.container.get()[option.key.get()] = nil
         end
     end
 

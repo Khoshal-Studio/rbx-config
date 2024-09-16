@@ -306,37 +306,31 @@ local function new(data : types.config_setup) : (boolean, types.config_window?)
 
     --[[----------------------------------------------------------------------]]--
 
-    config = {
-        title = props(data.title or "Config"),
+    config.title = props(data.title or "Config")
+    config.draggable = props(if data.draggable == nil then true else data.draggable)
+    config.visible = props(if data.visible == nil then true else data.visible)
+    config.sidebar_visible = props(if data.sidebar_visible == nil then false else data.sidebar_visible)
+    
+    config.objects = objects_prop.immutable
+    config.requires_apply = props(if data.requires_apply == nil then true else data.requires_apply)
+    config.frame = frame_prop.immutable
 
-        draggable = props(if data.draggable == nil then true else data.draggable),
-        visible = props(if data.visible == nil then true else data.visible),
+    config.close = close_btn_mouse_click
+    config.view = view
+    config.get_object = get_object
+    config.get_object_from_path = get_object_from_path
+    config.foreach = foreach
+    config.foreach_recursive = foreach_recursive
+    config.export = export
+    config.apply = apply
 
-        sidebar_visible = props(if data.sidebar_visible == nil then false else data.sidebar_visible),
-        
-        applied = apply_signal.Restricted,
-        changed = changed_signal.Restricted,
-        
-        objects = objects_prop.immutable,
+    config.applied = apply_signal.Restricted
+    config.changed = changed_signal.Restricted
 
-        close = close_btn_mouse_click,
-        view = view,
-        get_object = get_object,
-        get_object_from_path = get_object_from_path,
-        export = export,
-        apply = apply,
+    config.__changed = changed_signal
+    config.__applied = apply_signal
 
-        requires_apply = props(if data.requires_apply == nil then true else data.requires_apply),
-
-        frame = frame_prop.immutable,
-
-        __type = "config_window" :: any,
-        __objects = objects_initial,
-        __foreach = foreach,
-        __foreach_recursive = foreach_recursive,
-        __changed = changed_signal,
-        __applied = apply_signal,
-    }
+    config.__type = "config_window"
 
     --[[----------------------------------------------------------------------]]--
 

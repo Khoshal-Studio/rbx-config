@@ -28,7 +28,7 @@ local props = config_util.props
 ----------------------------------------------------------------------------------------------------------------
 
 local function new(data : string_data) : (boolean, string_input_option?)
-    local success, option : string_input_option? = input_option_backend(data)
+    local success, option : any? = input_option_backend(data)
     if not (success and option) then
         return false
     end

@@ -44,10 +44,8 @@ type input_container = config_types.input_container
 local clamp : (number, number, number) -> number = math.clamp
 local floor : (number) -> number = math.floor
 local abs : (number) -> number = math.abs
-local _ceil : (number) -> number = math.ceil
-local _log10 : (number) -> number = math.log10
-local _pow : (number, number) -> number = math.pow
-local _find : (any, any) -> number? = table.find
+
+------------------------------------------------------------------------------------------------------
 
 local is_integer : (number) -> boolean = function(value: number): boolean
 	return type(value) == "number" and value % 1 == 0
@@ -59,12 +57,15 @@ end
 
 local function has_duplicates(array: {any}): boolean
 	local hash : { [any]: boolean } = {}
-	for _, value : any in ipairs(array) do
+
+	for _, value in array do
 		if hash[value] then
 			return true
 		end
+
 		hash[value] = true
 	end
+
 	return false
 end
 
@@ -92,14 +93,14 @@ local function get_cancel_fn(t : any)
 	end
 end
 
-local function get_path(data : input_option | input_container) : string
+local function get_path(data : any) : string
 	local current = data
 	local path = ""
 
 	while current and current.__type ~= "config_window" :: any do
 		path = "/" .. (current.key :: any).get() .. path
 
-		current = current.__container
+		current = current.container.get()
 	end
 
 	return "." .. path
@@ -371,7 +372,7 @@ module.universal_valid_data = function(data : data) : (boolean, string?)
 	return true
 end
 
-module.get_config = function(data : input_option | input_container) : any?
+module.get_config = function(data : any) : any?
 	local current = data
 
 	while current do
@@ -379,7 +380,7 @@ module.get_config = function(data : input_option | input_container) : any?
 			return current
 		end
 
-		current = current.__container or current.__config or nil
+		current = current.container.get() or current.config.get() or nil
 	end
 
 	return nil

@@ -73,11 +73,11 @@ local function new(data : types.container_data) : (boolean, types.input_containe
         return exported
     end
 
-    local function container_delete(self : types.input_container)
-        delete(self)
+    local function container_delete()
+        delete(container)
         
-        if self.__container then
-            self.__container[self.key.get()] = nil
+        if container.container.get() then
+            container.container.get()[container.key.get()] = nil
         end
     end
 
@@ -110,7 +110,7 @@ local function new(data : types.container_data) : (boolean, types.input_containe
     local key_info = {
         set = {
             function (value : string)
-                if container.__container and container.__container[value] then
+                if container.container.get() and container.container.get()[value] then
                     return cancel("key")
                 end
 
@@ -136,7 +136,7 @@ local function new(data : types.container_data) : (boolean, types.input_containe
     local function key_changed(key : string, previous_key : string)
         set_key_str(key)
 
-        local x = container.__container or container.__config
+        local x = container.container.get() or container.config.get()
 
         if not x then
             return
@@ -179,10 +179,12 @@ local function new(data : types.container_data) : (boolean, types.input_containe
         delete = container_delete,
         get_path = get_path_method,
 
-        __foreach = foreach,
-        __foreach_recursive = foreach_recursive,
+        foreach = foreach,
+        foreach_recursive = foreach_recursive,
         
-        __container = nil,
+        container = props(nil).immutable,
+        config = props(nil).immutable,
+        
         __type = "input_container" :: any,
         __objects = objects_inital,
     }

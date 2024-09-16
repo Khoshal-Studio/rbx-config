@@ -62,14 +62,43 @@ module.get_frame = function(option : types.data) : Frame
 end
 
 module.get_desc_text = function(option : types.input_option) : string
-	local desc = option.description.get()
-	local datatype = option.__datatype
+	local desc : string = option.description.get()
+	local datatype : string = (option :: any).datatype.get()
 	
 	if not datatype then
 		return desc
 	end
-	
-	return string.format("%s\n\nDefault Value: %s", desc, tostring((option :: any).default_value.get()))
+
+    local desc_str = string.format("%s\n\nDefault Value: %s\n\nDatatype: %s", desc, tostring((option :: any).default_value.get()), datatype)
+
+	if datatype == "number" then
+        local _option = option :: types.number_input_option
+
+        local num_info = _option.num_info.get()
+        local limit = num_info.limit
+
+        desc_str = desc_str .. string.format("\n\nNumber Type: %s%s", 
+            if num_info.signed then "Signed" else "Unsigned",
+            if num_info.int then "Integer" else "Float")
+        
+        if limit then 
+            if limit.min then
+                desc_str = desc_str .. string.format("\n\nMin: %s", tostring(limit.min))
+            end
+
+            if limit.max then
+                desc_str = desc_str .. string.format("\nMax: %s", tostring(limit.max))
+            end
+        end
+	elseif datatype == "string" then
+        local _option = option :: types.string_input_option
+
+        local max_length = _option.max_length.get()
+
+        desc_str = desc_str .. string.format("\n\nMax Length: %s", tostring(max_length))
+	end
+
+    return desc_str
 end
 
 module.valid_data = function(data : types.data) : (boolean, string?)
