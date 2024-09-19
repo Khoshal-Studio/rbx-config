@@ -51,7 +51,7 @@ local function fov_test()
 
 	config.frame.get().Parent = ScreenGui
 	config.frame.get().Position = UDim2.fromScale(0.5, 0.5)
-	config.frame.get().Size = UDim2.fromScale(0.3, 0.15)
+	config.frame.get().Size = UDim2.fromScale(0.3, 0.17)
 end
 
 --------------------------------------------------------------------

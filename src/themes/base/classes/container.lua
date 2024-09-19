@@ -163,9 +163,7 @@ local function new(data : types.container_data) : (boolean, types.input_containe
 	end
 	
 	local function config_changed(new_value)
-		container.foreach_recursive(function(object)
-			object.config.set(new_value)
-		end)
+		container.foreach_recursive(function(object) object.config.set(new_value) end)
 	end
 
     --[[----------------------------------------------------------------------]]--

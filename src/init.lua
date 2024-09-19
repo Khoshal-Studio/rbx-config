@@ -2,6 +2,10 @@
 
 --------------------------------------------------------------------------------------------------------------------------
 
+assert(game:GetService("RunService"):IsClient(), "rbx-config can only be used on the client!")
+
+--------------------------------------------------------------------------------------------------------------------------
+
 local module = {
 	dependencies = script:WaitForChild("dependencies"),
 	types = script:WaitForChild("config_types"),

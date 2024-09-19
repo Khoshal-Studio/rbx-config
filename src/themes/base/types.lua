@@ -37,7 +37,8 @@ export type boolean_data = config_types.boolean_data & data_base<"boolean", bool
 export type number_data = config_types.number_data & data_base<"number", number, input_frame> & 
 {
     enter_required : boolean?,
-    zero_on_nil : boolean?,
+	zero_on_nil : boolean?,
+	slider_enabled : boolean? -- TODO: Add slider feature
 }
 
 export type string_data = config_types.string_data & data_base<"string", string, input_frame> & 
@@ -96,7 +97,8 @@ export type boolean_input_option = config_types.boolean_input_option & input_opt
 export type number_input_option = config_types.number_input_option & input_option_base<number, input_frame> & 
 {
     enter_required : prop<boolean>,
-    zero_on_nil : prop<boolean>,
+	zero_on_nil : prop<boolean>,
+	slider_enabled : prop<boolean>
 }
 
 export type string_input_option = config_types.string_input_option & input_option_base<string, input_frame> & 

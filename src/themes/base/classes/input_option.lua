@@ -148,7 +148,43 @@ local function new(data : types.data) : (boolean, types.input_option?, prop<any>
                 return package(value)
             end
         }
-    }
+	}
+	
+	local config_set_info = {
+		set = {	
+			function (value : types.config_window_internal?)
+				if (value == nil) and (option.container.get() == nil) then
+					local current_config = option.config.get() :: types.config_window_internal?
+					
+					if current_config then
+						current_config.objects.get()[option.key.get()] = nil
+						option.frame.get().Parent = nil
+					end					
+				end
+					
+				return package(value)
+			end,
+		}
+	}
+	
+	local container_set_info = {
+		set = {
+			function (value : types.internal_input_container?)
+				if (value == nil) then
+					local current_container = option.container.get() :: types.internal_input_container?
+				
+					if current_container then
+						current_container.objects.get()[option.key.get()] = nil
+						option.frame.get().Parent = nil
+					end
+					
+					option.config.set(nil)
+				end
+			
+				return package(value)
+			end,
+		}
+	}
 
     --[[----------------------------------------------------------------------]]--
 
@@ -207,9 +243,14 @@ local function new(data : types.data) : (boolean, types.input_option?, prop<any>
 
     local function original_value_changed(new_value : any)
         key_changed(option.key.get())
-    end
+	end
 
-    --[[----------------------------------------------------------------------]]--
+	--[[----------------------------------------------------------------------]]--
+	
+	option.config.middleware.set.add(config_set_info.set[1], 1)
+	option.container.middleware.set.add(container_set_info.set[1], 1)
+	
+	--[[----------------------------------------------------------------------]]--
 
     option.frame = frame_prop.immutable
     option.layout_order = props(data.layout_order or 0, layout_order_info)

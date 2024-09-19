@@ -24,7 +24,7 @@ local function new(data : number_data) : (boolean, number_input_option?)
     
     if not (option_new and success) then
         return false
-    end
+	end
 
     --[[----------------------------------------------------------------------]]--
 
@@ -41,7 +41,7 @@ local function new(data : number_data) : (boolean, number_input_option?)
             return
         end
 
-        if input.Text == "" then
+        if input.Text == "" and option.zero_on_nil.get() == true then
             option.set(0)
             return
         end
@@ -81,10 +81,12 @@ local function new(data : number_data) : (boolean, number_input_option?)
 
         option.changed:Fire(option.get())
     end
+	
+	--[[----------------------------------------------------------------------]]--
 
-    --[[----------------------------------------------------------------------]]--
-
-    option.enter_required = props(if data.enter_required == nil then false else data.enter_required)
+	option.enter_required = props(if data.enter_required == nil then false else data.enter_required)
+	option.zero_on_nil = props(if data.zero_on_nil == nil then false else data.zero_on_nil)
+	option.slider_enabled = props(if data.slider_enabled == nil then false else data.slider_enabled)
 
     --[[----------------------------------------------------------------------]]--
 
