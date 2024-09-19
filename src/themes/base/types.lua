@@ -258,7 +258,6 @@ export type config_window = window &
 
 export type config_window_internal = config_window & 
 {
-    __objects : input_objects,
     __changed : signal,
     __applied : signal
 }

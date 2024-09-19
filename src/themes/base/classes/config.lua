@@ -57,7 +57,7 @@ local function new(data : types.config_setup) : (boolean, types.config_window?)
     local _cancel = get_cancel_fn(config)
 
     local function foreach(callback : (key : string, object : types.input_option | types.input_container) -> ())
-        local objects = config.__objects
+        local objects = config.objects.get()
 
         for key, object in pairs(objects) do
             callback(key, object)
@@ -65,7 +65,7 @@ local function new(data : types.config_setup) : (boolean, types.config_window?)
     end
 
     local function foreach_recursive(callback : (object : types.input_option | types.input_container) -> ())
-        local objects = config.__objects
+        local objects = config.objects.get()
 
         for _, object in pairs(objects) do
             callback(object)
@@ -77,7 +77,7 @@ local function new(data : types.config_setup) : (boolean, types.config_window?)
     end
 
     local function export()
-        local objects = config.__objects
+        local objects = config.objects.get()
         local exported = {}
 
         for key, object in pairs(objects) do
